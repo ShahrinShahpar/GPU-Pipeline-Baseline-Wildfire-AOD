@@ -1,0 +1,40 @@
+=== GPU Wildfire AOD Pipeline - How to Run ===
+
+EVERY TIME AFTER REBOOT:
+-------------------------
+1. Mount the SD card (CUDA libraries live here):
+   sudo mount /dev/mmcblk0p1 /mnt/sdcard
+
+2. Set up environment variables:
+   export PATH=/usr/local/cuda-13.2/bin:$PATH
+   export LD_LIBRARY_PATH=/usr/local/cuda-stubs:/mnt/sdcard/cuda-13.2/targets/sbsa-linux/lib:$LD_LIBRARY_PATH
+
+3. Go to project folder:
+   cd ~/GPU-Pipeline-for-Wildfire-Aerosol-Forecasting-from-GOES-Satellites
+
+RUN THE PIPELINE:
+-----------------
+   ./aod_pipeline
+
+   Output saved to: output/
+     - output/G16_knn/       KNN-imputed images
+     - output/G16_of/        Optical flow
+     - output/G16_smooth/    Smoothed velocity
+     - output/G16_k/         Diffusivity K
+     - output/G16_g/         G matrix
+     - output/G16_gibbs/     Gibbs filter results
+     - output/timing_gpu.csv GPU timing summary
+
+GENERATE PLOTS:
+---------------
+   python3 validation/gibbs/13_check_mse.py
+   python3 validation/gibbs/14_plots.py
+
+   Figures saved to: output/plots/
+
+NOTES:
+------
+- GPU: Jetson Orin (sm_87)
+- CUDA 13.2 toolkit is on the SD card (/mnt/sdcard/cuda-13.2/)
+- SD card must be mounted before running
+- Total pipeline runtime: ~4 minutes
